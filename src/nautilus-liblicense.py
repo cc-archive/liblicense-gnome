@@ -22,6 +22,10 @@ import gtk
 import nautilus
 from liblicense.gui_gtk import *
 
+import gettext
+t = gettext.translation('liblicense')
+_ = t.lgettext
+
 class LicenseInfoProvider(nautilus.InfoProvider):
     def __init__(self):
         pass
@@ -58,7 +62,7 @@ class LicensePropertyPage(nautilus.PropertyPageProvider):
             return
         
         self.seen = False
-        self.property_label = gtk.Label('License')
+        self.property_label = gtk.Label(_("License"))
         self.property_label.show()
         
         if len(files) == 1:
