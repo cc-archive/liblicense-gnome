@@ -19,7 +19,7 @@
 import gtk
 import gobject
 import liblicense
-icon_location = "@prefix@/share/liblicense/icons"
+icon_location = "@LICENSE_ICON_DIR@"
 if icon_location[0]=="@":
     icon_location="."
 
@@ -50,7 +50,7 @@ class LicenseWidget(gtk.VBox):
         icon.show()
         box.pack_start(icon,False,False,icon_padding)
 
-        label = gtk.Label("Attribution")
+        label = gtk.Label("Require Attribution")
         label.show()
         box.pack_start(label,False,False,10)
         

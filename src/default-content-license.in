@@ -20,7 +20,7 @@ import liblicense
 from liblicense.gui_gtk import *
 import gtk
 
-icon_location = "@prefix@/share/liblicense/icons"
+icon_location = "@LICENSE_ICON_DIR@"
 if icon_location[0]=="@":
     icon_location="."
     
@@ -43,7 +43,7 @@ class DefaultLicense (gtk.Window):
         icon.show()
         title_box.pack_start(icon,False,False,5)
         
-        label = gtk.Label("Default Content License")
+        label = gtk.Label("Set the default license for content")
         label.show()
         title_box.pack_start(label,False)
         title_box.show()
