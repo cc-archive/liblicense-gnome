@@ -20,9 +20,10 @@ import gtk
 import gobject
 import liblicense
 
-import gettext
-t = gettext.translation('liblicense')
-_ = t.lgettext
+#import gettext
+#t = gettext.translation('liblicense')
+#_ = t.lgettext
+_ = lambda x: x
 
 icon_location = "@LICENSE_ICON_DIR@"
 if icon_location[0]=="@":
@@ -244,7 +245,11 @@ class LicenseWidget(gtk.VBox):
             self.emit("changed",u)
             self.uri.set_text(u)
             v = liblicense.get_version(u)
-            self.license.set_text("%s - %d.%d.%d" % (liblicense.get_name(u), v[0], v[1], v[2]))
+            if v:
+              version = " - "+".".join(map(str,v))
+            else:
+              version = ""
+            self.license.set_text("%s%s" % (liblicense.get_name(u), version))
         else:
             self.uri.set_text("")
             self.license.set_text(_("None"))
@@ -273,8 +278,12 @@ class LicenseWidget(gtk.VBox):
     
     def set_license(self, license):
         if license and liblicense.verify_uri(license):
-            version = liblicense.get_version(license)
-            self.license.set_text("%s - %d.%d.%d" % (liblicense.get_name(license), version[0], version[1], version[2]))
+            v = liblicense.get_version(license)
+            if v:
+              version = " - "+".".join(map(str,v))
+            else:
+              version = ""
+            self.license.set_text("%s%s" % (liblicense.get_name(license), version))
             self.uri.set_text(license)
             if self.jurisdiction.get_active()==-1 or self._j[self.jurisdiction.get_active()]!=liblicense.get_jurisdiction(license):
                 self.update_chooser()
