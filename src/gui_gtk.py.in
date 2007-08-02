@@ -182,7 +182,7 @@ class LicenseWidget(gtk.VBox):
 
         self._j = liblicense.get_jurisdictions()
         for juris in self._j:
-            self.jurisdictions.append([juris,juris,gtk.gdk.pixbuf_new_from_file_at_size(icon_location + "/"+juris+".png",27,16)])
+            self.jurisdictions.append([juris,liblicense.jurisdiction_name(juris),gtk.gdk.pixbuf_new_from_file_at_size(icon_location + "/"+juris+".png",27,16)])
         self._j[0] = None #refer to unported as None
 
         self.jurisdiction.show()
