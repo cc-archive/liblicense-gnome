@@ -22,10 +22,13 @@ import gtk
 import nautilus
 from liblicense.gui_gtk import *
 
-#import gettext
-#t = gettext.translation('liblicense')
-#_ = t.lgettext
-_ = lambda x: x
+try:
+	import gettext
+	t = gettext.translation('liblicense')
+	_ = t.lgettext
+except:
+	print "Translations unavailable"
+	_ = lambda x: x
 
 class LicenseInfoProvider(nautilus.InfoProvider):
     def __init__(self):

@@ -20,10 +20,13 @@ import gtk
 import gobject
 import liblicense
 
-#import gettext
-#t = gettext.translation('liblicense')
-#_ = t.lgettext
-_ = lambda x: x
+try:
+	import gettext
+	t = gettext.translation('liblicense')
+	_ = t.lgettext
+except:
+	print "Translations unavailable"
+	_ = lambda x: x
 
 icon_location = "@LICENSE_ICON_DIR@"
 if icon_location[0]=="@":
@@ -182,7 +185,7 @@ class LicenseWidget(gtk.VBox):
 
         self._j = liblicense.get_jurisdictions()
         for juris in self._j:
-            self.jurisdictions.append([juris,liblicense.jurisdiction_name(juris),gtk.gdk.pixbuf_new_from_file_at_size(icon_location + "/"+juris+".png",27,16)])
+            self.jurisdictions.append([juris,_(liblicense.jurisdiction_name(juris)),gtk.gdk.pixbuf_new_from_file_at_size(icon_location + "/"+juris+".png",27,16)])
         self._j[0] = None #refer to unported as None
 
         self.jurisdiction.show()
@@ -254,7 +257,6 @@ class LicenseWidget(gtk.VBox):
 
     def update_chooser(self, license=None):
         j = self.jurisdictions[self.jurisdiction.get_active()][0]
-        print "juris",j
         self.ll_chooser = liblicense.LicenseChooser(j,attributes)
     
     def license_flags(self,license):

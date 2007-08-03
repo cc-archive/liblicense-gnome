@@ -20,10 +20,13 @@ import liblicense
 from liblicense.gui_gtk import *
 import gtk
 
-#import gettext
-#t = gettext.translation('liblicense')
-#_ = t.lgettext
-_ = lambda x: x
+try:
+	import gettext
+	t = gettext.translation('liblicense')
+	_ = t.lgettext
+except Exception, e:
+	print "Translations unavailable: ",e
+	_ = lambda x: x
 
 icon_location = "@LICENSE_ICON_DIR@"
 if icon_location[0]=="@":
