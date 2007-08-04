@@ -210,7 +210,12 @@ class LicenseWidget(gtk.VBox):
         self.sa.connect("toggled",self.checkbox_toggled,4)
         
         self.jurisdiction.connect("changed",self.update_jurisdiction)
-    
+
+    def do_size_request(self, requisition):
+        gtk.VBox.do_size_request(self,requisition)
+        #give extra space for the long-ish URI's and license names
+        requisition.width = requisition.width + 125
+
     def update_checkboxes(self,license):
         if license:
             self.current_flags= list(self.license_flags(license))
