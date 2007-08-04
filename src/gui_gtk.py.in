@@ -52,7 +52,6 @@ class LicenseWidget(gtk.VBox):
         
         self.by = gtk.CheckButton()
         self.by.show()
-        box.pack_start(self.by,False,False,10)
         
         icon = gtk.Image()
         icon.set_from_pixbuf(gtk.gdk.pixbuf_new_from_file_at_size(icon_location + "/by.svg", icon_size, icon_size))
@@ -62,8 +61,9 @@ class LicenseWidget(gtk.VBox):
         label = gtk.Label(_("Require Attribution"))
         label.show()
         box.pack_start(label,False,False,10)
-        
-        self.pack_start(box)
+
+        self.by.add(box)
+        self.pack_start(self.by)
         
         # Allow Sharing
         box = gtk.HBox()
@@ -71,7 +71,6 @@ class LicenseWidget(gtk.VBox):
         
         self.ash = gtk.CheckButton()
         self.ash.show()
-        box.pack_start(self.ash,False,False,10)
         
         icon = gtk.Image()
         icon.set_from_pixbuf(gtk.gdk.pixbuf_new_from_file_at_size(icon_location+"/ash.svg", icon_size, icon_size))
@@ -81,8 +80,9 @@ class LicenseWidget(gtk.VBox):
         label = gtk.Label(_("Allow Sharing"))
         label.show()
         box.pack_start(label,False,False,10)
-        self.ash_box = box
-        self.pack_start(box)
+
+        self.ash.add(box)
+        self.pack_start(self.ash)
         
         # Allow Remixing
         box = gtk.HBox()
@@ -91,7 +91,6 @@ class LicenseWidget(gtk.VBox):
         self.ar = gtk.CheckButton()
         self.ar.show()
         self.ar.connect("toggled",self.ar_toggled)
-        box.pack_start(self.ar,False,False,10)
         
         icon = gtk.Image()
         icon.set_from_pixbuf(gtk.gdk.pixbuf_new_from_file_at_size(icon_location + "/ar.svg", icon_size, icon_size))
@@ -101,8 +100,9 @@ class LicenseWidget(gtk.VBox):
         label = gtk.Label(_("Allow Remixing"))
         label.show()
         box.pack_start(label,False,False,10)
-        self.ar_box = box
-        self.pack_start(box)
+
+        self.ar.add(box)
+        self.pack_start(self.ar)
         
         # Prohibit Commercial Works
         box = gtk.HBox()
@@ -110,7 +110,6 @@ class LicenseWidget(gtk.VBox):
         
         self.pcw = gtk.CheckButton()
         self.pcw.show()
-        box.pack_start(self.pcw,False,False,10)
         
         icon = gtk.Image()
         icon.set_from_pixbuf(gtk.gdk.pixbuf_new_from_file_at_size(icon_location + "/pcw.svg", icon_size, icon_size))
@@ -120,8 +119,9 @@ class LicenseWidget(gtk.VBox):
         label = gtk.Label(_("Prohibit Commercial Works"))
         label.show()
         box.pack_start(label,False,False,10)
-        self.pcw_box = box
-        self.pack_start(box)
+
+        self.pcw.add(box)
+        self.pack_start(self.pcw)
         
         # Require Others to Share-Alike
         box = gtk.HBox()
@@ -129,7 +129,6 @@ class LicenseWidget(gtk.VBox):
         
         self.sa = gtk.CheckButton()
         self.sa.show()
-        box.pack_start(self.sa,False,False,10)
         
         icon = gtk.Image()
         icon.set_from_pixbuf(gtk.gdk.pixbuf_new_from_file_at_size(icon_location + "/sa.svg", icon_size, icon_size))
@@ -139,9 +138,9 @@ class LicenseWidget(gtk.VBox):
         label = gtk.Label(_("Require Others to Share-Alike"))
         label.show()
         box.pack_start(label,False,False,10)
-        self.sa_box = box
-        
-        self.pack_start(box)
+
+        self.sa.add(box)
+        self.pack_start(self.sa)
         
         # License and URI
         hbox = gtk.HBox()
@@ -226,7 +225,7 @@ class LicenseWidget(gtk.VBox):
         
 
     def ar_toggled(self,button):
-        self.sa_box.set_sensitive(button.get_active())
+        self.sa.set_sensitive(button.get_active())
         if not button.get_active():
             self.sa.set_active(False)
             self.sa.toggled()
@@ -284,13 +283,11 @@ class LicenseWidget(gtk.VBox):
             self.uri.set_text(license)
             
             self.jurisdiction.set_active(self._j.index(liblicense.get_jurisdiction(license)))
-            self.update_chooser()
         else:
             self.license.set_text(_("None"))
-            if self.jurisdiction.get_active()!=0:
-               self.update_chooser()
             self.jurisdiction.set_active(0)
             license=None
+        self.update_chooser()
         self.update_checkboxes(license)
     
     def get_license(self):
