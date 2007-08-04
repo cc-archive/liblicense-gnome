@@ -25,7 +25,7 @@ from liblicense.gui_gtk import *
 try:
 	import gettext
 	t = gettext.translation('liblicense')
-	_ = t.lgettext
+	_ = t.ugettext
 except:
 	print "Translations unavailable"
 	_ = lambda x: x

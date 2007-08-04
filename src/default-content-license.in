@@ -23,7 +23,7 @@ import gtk
 try:
 	import gettext
 	t = gettext.translation('liblicense')
-	_ = t.lgettext
+	_ = t.ugettext
 except Exception, e:
 	print "Translations unavailable: ",e
 	_ = lambda x: x
