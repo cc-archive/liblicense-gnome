@@ -30,7 +30,7 @@ except:
 
 icon_location = "@LICENSE_ICON_DIR@"
 if icon_location[0]=="@":
-    icon_location="."
+    icon_location="/usr/share/liblicense/icons"
 
 attributes = ["http://creativecommons.org/ns#Attribution",
               "http://creativecommons.org/ns#Distribution",
@@ -141,29 +141,50 @@ class LicenseWidget(gtk.VBox):
 
         self.sa.add(box)
         self.pack_start(self.sa)
-        
+
         # License and URI
         hbox = gtk.HBox()
         hbox.show()
         
         box = gtk.VBox()
         box.show()
+        box.set_spacing(10)
         hbox.pack_start(box,False,False,5)
+       
+        empty_box = gtk.VBox()
+        empty_box.show()
+        empty_box.set_size_request(10,20)
+        box.pack_start(empty_box)
         
         label = gtk.Label(_("License:"))
         label.show()
-        box.pack_start(label)
+        box.pack_start(label,False,False)
         
         label = gtk.Label(_("Jurisdiction:"))
         label.show()
-        box.pack_start(label)
+        box.pack_start(label,False,False)
         
         label = gtk.Label(_("License URI:"))
         label.show()
-        box.pack_start(label)
+        box.pack_start(label,False,False)
         
         box = gtk.VBox()
         box.show()
+        #Warning
+        wbox = gtk.HBox()
+        wbox.show()
+        wbox.set_size_request(110,30)
+        self.warning = gtk.HBox()
+        icon = gtk.Image()
+        icon.set_from_stock(gtk.STOCK_DIALOG_WARNING,gtk.ICON_SIZE_LARGE_TOOLBAR)
+        self.warning.pack_start(icon)
+        icon.show()
+        label = gtk.Label()
+        label.set_markup("<b>"+_("WARNING: ")+"</b>"+_("No such license exists."))
+        self.warning.pack_start(label,False,False,10)
+        label.show()
+        wbox.pack_start(self.warning,False,False,0)
+        box.pack_start(wbox)
         
         #license
         self.license = gtk.Entry()
@@ -246,6 +267,7 @@ class LicenseWidget(gtk.VBox):
           prohibits=(self.current_flags[3]<<3))
 
         if licenses:
+            self.warning.hide()
             u = licenses[0]
             self.emit("changed",u)
             self.uri.set_text(u)
@@ -256,6 +278,7 @@ class LicenseWidget(gtk.VBox):
               version = ""
             self.license.set_text("%s%s" % (liblicense.get_name(u), version))
         else:
+            self.warning.show()
             self.uri.set_text("")
             self.license.set_text(_("None"))
 

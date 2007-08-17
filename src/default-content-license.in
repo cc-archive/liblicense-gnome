@@ -51,7 +51,7 @@ class DefaultLicense (gtk.Window):
         icon.show()
         title_box.pack_start(icon,False,False,5)
         
-        label = gtk.Label(_("Set the default license for the license chooser"))
+        label = gtk.Label(_("Set the default content license when using the license chooser"))
         label.show()
         title_box.pack_start(label,False)
         title_box.show()
