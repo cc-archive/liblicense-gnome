@@ -174,18 +174,26 @@ class LicenseWidget(gtk.VBox):
         wbox = gtk.HBox()
         wbox.show()
         wbox.set_size_request(110,30)
-        self.warning = gtk.HBox()
+
+        self.warning = gtk.EventBox()
+        self.warning.modify_bg(gtk.STATE_NORMAL,gtk.gdk.color_parse("#FFFF00"))
+        self.warning.set_visible_window(True)
+
+        hbox_tmp = gtk.HBox()
+        hbox_tmp.show()
+        self.warning.add(hbox_tmp)
+        
         icon = gtk.Image()
         icon.set_from_stock(gtk.STOCK_DIALOG_WARNING,gtk.ICON_SIZE_LARGE_TOOLBAR)
-        self.warning.pack_start(icon)
+        hbox_tmp.pack_start(icon,False,False,10)
         icon.show()
         label = gtk.Label()
         label.set_markup("<b>"+_("WARNING: ")+"</b>"+_("No such license exists."))
-        self.warning.pack_start(label,False,False,10)
+        hbox_tmp.pack_start(label,False,False,10)
         label.show()
-        wbox.pack_start(self.warning,False,False,0)
+        wbox.pack_start(self.warning,True,True,0)
         box.pack_start(wbox)
-        
+
         #license
         self.license = gtk.Entry()
         self.license.set_editable(False)
@@ -211,16 +219,18 @@ class LicenseWidget(gtk.VBox):
         self.jurisdiction.show()
         
         box.pack_start(self.jurisdiction,False,False,0)
-        
+
         self.uri = gtk.Entry()
         self.uri.set_editable(True)
         self.uri.show()
+
         box.pack_start(self.uri)
         self.label = label
         self.icon = icon
+
         hbox.pack_start(box)
         self.pack_start(hbox)
-        
+
         self.set_license(license)
         
         # hook up license switcher
