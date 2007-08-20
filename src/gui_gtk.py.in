@@ -46,13 +46,27 @@ class LicenseWidget(gtk.VBox):
         gtk.VBox.__init__(self)
             
         self.set_spacing(5)
+        # No license
+        box = gtk.HBox()
+        box.show()
+        self.no_license = gtk.RadioButton(label=_("No License"))
+        self.no_license.connect("toggled",self._no_license_cb)
+        self.no_license.show()
+        box.pack_start(self.no_license)
+        
+        self.license_below = gtk.RadioButton(self.no_license,_("License selected below"))
+        self.license_below.show()
+        self.license_below.connect("toggled",self._no_license_cb)
+        box.pack_start(self.license_below)
+        self.pack_start(box)
+        
         # Attribution
         box = gtk.HBox()
         box.show()
         
         self.by = gtk.CheckButton()
         self.by.show()
-        
+
         icon = gtk.Image()
         icon.set_from_pixbuf(gtk.gdk.pixbuf_new_from_file_at_size(icon_location + "/by.svg", icon_size, icon_size))
         icon.show()
@@ -156,17 +170,17 @@ class LicenseWidget(gtk.VBox):
         empty_box.set_size_request(10,20)
         box.pack_start(empty_box)
         
-        label = gtk.Label(_("License:"))
-        label.show()
-        box.pack_start(label,False,False)
+        self.license_label = gtk.Label(_("License:"))
+        self.license_label.show()
+        box.pack_start(self.license_label,False,False)
         
-        label = gtk.Label(_("Jurisdiction:"))
-        label.show()
-        box.pack_start(label,False,False)
+        self.jurisdiction_label = gtk.Label(_("Jurisdiction:"))
+        self.jurisdiction_label.show()
+        box.pack_start(self.jurisdiction_label,False,False)
         
-        label = gtk.Label(_("License URI:"))
-        label.show()
-        box.pack_start(label,False,False)
+        self.uri_label = gtk.Label(_("License URI:"))
+        self.uri_label.show()
+        box.pack_start(self.uri_label,False,False)
         
         box = gtk.VBox()
         box.show()
@@ -320,30 +334,53 @@ class LicenseWidget(gtk.VBox):
             self.license.set_text("%s%s" % (liblicense.get_name(license), version))
             self.uri.set_text(license)
             
-            self.jurisdiction.set_active(self._j.index(liblicense.get_jurisdiction(license)))
+            self.jurisdiction.set_active(self._j.index(liblicense.get_jurisdiction(license))) 
+            self.license_below.props.active = True
+            self.license_below.toggled()
         else:
             self.license.set_text(_("None"))
             self.jurisdiction.set_active(0)
             license=None
+            self.no_license.props.active = True
+            self.no_license.toggled()
         self.update_chooser()
         self.update_checkboxes(license)
     
     def get_license(self):
         return self.uri.get_text()
+    
+    def _no_license_cb(self,widget):
+        if widget.props.active:
+            self.by.set_sensitive(self.license_below.props.active)
+            self.ash.set_sensitive(self.license_below.props.active)
+            self.ar.set_sensitive(self.license_below.props.active)
+            self.pcw.set_sensitive(self.license_below.props.active)
+            self.sa.set_sensitive(self.license_below.props.active)
+            self.uri.set_sensitive(self.license_below.props.active)
+            self.jurisdiction.set_sensitive(self.license_below.props.active)
+            self.license.set_sensitive(self.license_below.props.active)
+            self.uri_label.set_sensitive(self.license_below.props.active)
+            self.license_label.set_sensitive(self.license_below.props.active)
+            self.jurisdiction_label.set_sensitive(self.license_below.props.active)
+            if widget==self.no_license:
+                self.emit("changed",None)
+            elif widget==self.license_below:
+                self.emit("changed",self.get_license())
+            
 
 if __name__=="__main__":
     import sys
-    if len(sys.argv)<2:
-        print "Please pass a test filename in."
-        sys.exit(1)
     def close(window):
         sys.exit(0)
     def changed(widget,uri):
-        print "changed: " + uri
+        print "changed: " + str(uri)
     window = gtk.Window()
     window.connect("destroy",close)
     window.set_title("liblicense widget test")
-    widget = LicenseWidget(liblicense.read(sys.argv[1]))
+    if len(sys.argv)>1:
+        widget = LicenseWidget(liblicense.read(sys.argv[1]))
+    else:
+        widget = LicenseWidget(liblicense.get_default())
     widget.connect("changed",changed)
     widget.show()
     window.add(widget)
