@@ -209,10 +209,12 @@ class LicenseWidget(gtk.VBox):
         box.pack_start(wbox)
 
         #license
-        self.license = gtk.Entry()
-        self.license.set_editable(False)
-        self.license.set_has_frame(False)
+        self.license = gtk.ComboBox()
+        cell = gtk.CellRendererText()
+        self.license.pack_start(cell, True)
+        self.license.add_attribute(cell, 'text', 1)
         self.license.show()
+        self.license.connect("changed",self._combobox_license_cb)
         box.pack_start(self.license)
         
         #jurisdiction
@@ -235,7 +237,7 @@ class LicenseWidget(gtk.VBox):
         box.pack_start(self.jurisdiction,False,False,0)
 
         self.uri = gtk.Entry()
-        self.uri.set_editable(True)
+        self.uri.set_editable(False)
         self.uri.show()
 
         box.pack_start(self.uri)
@@ -246,6 +248,7 @@ class LicenseWidget(gtk.VBox):
         self.pack_start(hbox)
 
         self.set_license(license)
+        self.set_size_request(450,-1)
         
         # hook up license switcher
         self.by.connect("toggled",self.checkbox_toggled,0)
@@ -255,11 +258,6 @@ class LicenseWidget(gtk.VBox):
         self.sa.connect("toggled",self.checkbox_toggled,4)
         
         self.jurisdiction.connect("changed",self.update_jurisdiction)
-
-    def do_size_request(self, requisition):
-        gtk.VBox.do_size_request(self,requisition)
-        #give extra space for the long-ish URI's and license names
-        requisition.width = requisition.width + 125
 
     def update_checkboxes(self,license):
         if license:
@@ -293,18 +291,25 @@ class LicenseWidget(gtk.VBox):
         if licenses:
             self.warning.hide()
             u = licenses[0]
-            self.emit("changed",u)
             self.uri.set_text(u)
-            v = liblicense.get_version(u)
-            if v:
-              version = " - "+".".join(map(str,v))
-            else:
-              version = ""
-            self.license.set_text("%s%s" % (liblicense.get_name(u), version))
+            liststore = gtk.ListStore(gobject.TYPE_STRING,gobject.TYPE_STRING)
+            self.license.set_model(liststore)
+            for u in licenses:
+                v = liblicense.get_version(u)
+                if v:
+                  version = " - "+".".join(map(str,v))
+                else:
+                  version = ""
+                liststore.append((u,("%s%s" % (liblicense.get_name(u), version))))
+            self.license.props.sensitive = True
+            self.license.set_model(liststore)
+            self.license.set_active(0)
         else:
             self.warning.show()
             self.uri.set_text("")
-            self.license.set_text(_("None"))
+            liststore = gtk.ListStore(gobject.TYPE_STRING,gobject.TYPE_STRING)
+            self.license.set_model(liststore)
+            self.license.props.sensitive = False
 
     def update_chooser(self, license=None):
         j = self.jurisdictions[self.jurisdiction.get_active()][0]
@@ -326,26 +331,29 @@ class LicenseWidget(gtk.VBox):
     
     def set_license(self, license):
         if license and liblicense.verify_uri(license):
-            v = liblicense.get_version(license)
-            if v:
-              version = " - "+".".join(map(str,v))
-            else:
-              version = ""
-            self.license.set_text("%s%s" % (liblicense.get_name(license), version))
-            self.uri.set_text(license)
+            self.jurisdiction.set_active(self._j.index(liblicense.get_jurisdiction(license)))
+            self.update_chooser()
+            self.update_checkboxes(license)
+            self.update_license()
+            license_list = self.license.get_model()
+            for i in range(len(license_list)):
+                if license_list[i][0]==license:
+                    self.license.set_active(i)
+                    break
             
-            self.jurisdiction.set_active(self._j.index(liblicense.get_jurisdiction(license))) 
+            self.uri.set_text(license)
+
             self.license_below.props.active = True
             self.license_below.toggled()
         else:
-            self.license.set_text(_("None"))
+            self.license.props.sensitive = False
             self.jurisdiction.set_active(0)
+            self.update_chooser()
+            self.update_checkboxes(license)
             license=None
             self.no_license.props.active = True
             self.no_license.toggled()
-        self.update_chooser()
-        self.update_checkboxes(license)
-    
+
     def get_license(self):
         return self.uri.get_text()
     
@@ -362,11 +370,18 @@ class LicenseWidget(gtk.VBox):
             self.uri_label.set_sensitive(self.license_below.props.active)
             self.license_label.set_sensitive(self.license_below.props.active)
             self.jurisdiction_label.set_sensitive(self.license_below.props.active)
+            self.warning.set_sensitive(self.license_below.props.active)
             if widget==self.no_license:
                 self.emit("changed",None)
             elif widget==self.license_below:
                 self.emit("changed",self.get_license())
-            
+     
+    def _combobox_license_cb(self,combobox):
+        active = combobox.get_active()     
+        model = combobox.get_model()
+        license = model[active][0]
+        self.uri.set_text(license)
+        self.emit("changed",license)
 
 if __name__=="__main__":
     import sys
