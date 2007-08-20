@@ -355,6 +355,8 @@ class LicenseWidget(gtk.VBox):
             self.no_license.toggled()
 
     def get_license(self):
+        if self.no_license.props.active:
+            return None
         return self.uri.get_text()
     
     def _no_license_cb(self,widget):
