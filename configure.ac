@@ -19,7 +19,7 @@
 # This file is part of Liblicense.
 
 AC_PREREQ(2.57)
-AC_INIT([liblicense],[0.4],[cc-devel@lists.ibiblio.org])
+AC_INIT([liblicense-gnome],[0.4],[cc-devel@lists.ibiblio.org])
 AM_INIT_AUTOMAKE([dist-bzip2])
 
 # Checks for programs.
@@ -33,7 +33,7 @@ AM_CHECK_PYTHON_HEADERS
 # check for liblicense
 ##################################################################
 
-LIBLICENSE_REQUIRED=0.3
+LIBLICENSE_REQUIRED=0.4
 
 PKG_CHECK_MODULES(LIBLICENSE,[
 	liblicense >= $LIBLICENSE_REQUIRED],,)

@@ -1,10 +1,10 @@
 This package provides Gnome Nautilus license integration through liblicense.  It allows reading and settings licenses in Nautilus and provides a system control module for setting the default content license.
 
-This package additionally install a license selector widget for use through PyGTK.
+This package additionally installs a license selector widget for use through PyGTK.
 
 == Dependancies ==
-* liblicense >= 0.3
-* pygtk
+* liblicense >= 0.4
+* pygtk >= 2.10
 * gnome-python
-* nautilus-python
+* nautilus-python >= 0.4.3
 
