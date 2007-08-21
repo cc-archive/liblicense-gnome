@@ -347,9 +347,6 @@ class LicenseWidget(gtk.VBox):
             self.license_below.toggled()
         else:
             self.license.props.sensitive = False
-            self.jurisdiction.set_active(0)
-            self.update_chooser()
-            self.update_checkboxes(license)
             license=None
             self.no_license.props.active = True
             self.no_license.toggled()

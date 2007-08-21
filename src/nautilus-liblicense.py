@@ -49,7 +49,7 @@ class LicensePropertyPage(nautilus.PropertyPageProvider):
 
     def license_chosen(self, widget):
         license = self.box.get_license()
-        if license and self.seen:
+        if self.seen:
             for f in self.files:
                 liblicense.write(f,license)
     
@@ -70,12 +70,17 @@ class LicensePropertyPage(nautilus.PropertyPageProvider):
         self.property_label.show()
         
         if len(files) == 1:
-            license = liblicense.read(self.files[0])
-            if license==None:
+            file_license = liblicense.read(self.files[0])
+            if file_license==None:
                 license = liblicense.get_default()
+            else:
+                license = file_license
         else:
             license = None
         self.box = LicenseWidget(license)
+        if file_license == None:
+        
+            self.box.set_license(None)
         self.box.connect("destroy",self.license_chosen)
         
         #when the by checkbox is exposed we know the whole layout is.
