@@ -69,6 +69,7 @@ class LicensePropertyPage(nautilus.PropertyPageProvider):
         self.property_label = gtk.Label(_("License"))
         self.property_label.show()
         
+        file_license = ""
         if len(files) == 1:
             file_license = liblicense.read(self.files[0])
             if file_license==None:
@@ -79,7 +80,6 @@ class LicensePropertyPage(nautilus.PropertyPageProvider):
             license = None
         self.box = LicenseWidget(license)
         if file_license == None:
-        
             self.box.set_license(None)
         self.box.connect("destroy",self.license_chosen)
         
