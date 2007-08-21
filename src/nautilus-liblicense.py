@@ -38,6 +38,7 @@ class LicenseInfoProvider(nautilus.InfoProvider):
         if f.get_uri()[:7]=="file://":
             license = liblicense.read(urllib.unquote(f.get_uri()[7:]))
             if license:
+                #TODO? Make URI's like these constants and a part of liblicense:
                 if "Creative Commons" in liblicense.get_attribute(license,"http://purl.org/dc/elements/1.1/creator",False):
                     f.add_emblem("cc")
                 else:
