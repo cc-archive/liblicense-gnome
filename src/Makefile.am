@@ -15,6 +15,7 @@
 # Copyright 2007, Creative Commons, www.creativecommons.org.
 # Copyright 2007, Scott Shawcroft.
 
+pkgpythondir = $(pythondir)/liblicense
 pkgpython_PYTHON = gui_gtk.py
 bin_SCRIPTS = default-content-license
 
