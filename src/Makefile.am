@@ -30,7 +30,7 @@ emblems_DATA=emblem-cc.svg \
 
 #force an update of the icon cache
 install-data-hook:
-	touch $(datadir)/icons/hicolor
+	touch $(DESTDIR)/$(datadir)/icons/hicolor
 
 if HAVE_NP
 pynautilusdir = $(libdir)/nautilus/extensions-1.0/python
